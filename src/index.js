@@ -5,7 +5,15 @@ const incrementActionCount = () =>
   localStorage.setItem('actionCount', getActionCount() + 1);
 
 export default push => () => next => action =>
-  push(getActionCount(), action).then(() => {
-    next(action);
-    incrementActionCount();
-  });
+  push(getActionCount(), action).then(
+    () => {
+      next(action);
+      incrementActionCount();
+    },
+    error => {
+      error.conflicts.forEach(conflict => {
+        next(conflict);
+        incrementActionCount();
+      });
+    }
+  );
