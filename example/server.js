@@ -14,6 +14,8 @@ app.get("/", function(req, res) {
   res.sendFile(__dirname + '/index.html')
 })
 
+app.use("/actions", require('./backend'))
+
 app.listen(port, function(error) {
   if (error) {
     console.error(error)
