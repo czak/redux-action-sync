@@ -1,57 +1,35 @@
 import expect from 'expect';
 import createActionSync from '../src';
 
-global.localStorage = {
-  getItem(key) { return this[key]; },
-  setItem(key, value) { this[key] = value; },
-};
-
 const createError = (conflicts) => Object.assign(new Error(), { conflicts });
 
 describe('redux-action-sync', () => {
-  beforeEach(() => delete localStorage.actionCount);
-
   describe('middleware', () => {
     const action = { type: 'TEST_ACTION' };
 
-    context('with empty localStorage', () => {
-      it("calls 'push' with index == 0", () => {
-        const push = expect.createSpy().andReturn(Promise.resolve());
-        createActionSync(push)()(() => {})(action);
-        expect(push).toHaveBeenCalledWith(0, action);
-      });
-
-      it('sets localStorage.actionCount to 1', () => {
-        const push = () => Promise.resolve();
-        return createActionSync(push)()(() => {})(action).then(() => {
-          expect(localStorage.actionCount).toEqual(1);
+    context('on success', () => {
+      it('dispatches the action', () => {
+        const middleware = createActionSync(() => Promise.resolve());
+        const dispatch = expect.createSpy();
+        return middleware()(dispatch)(action).then(() => {
+          expect(dispatch).toHaveBeenCalledWith(action);
         });
       });
-    });
 
-    context('with initial value in localStorage.actionCount', () => {
-      beforeEach(() => { localStorage.actionCount = '12'; });
-
-      it("calls 'push' with index == localStorage.actionCount", () => {
+      specify("subsequent actions call 'push' with consecutive index values", () => {
         const push = expect.createSpy().andReturn(Promise.resolve());
-        createActionSync(push)()(() => {})(action);
-        expect(push).toHaveBeenCalledWith(12, action);
-      });
-
-      it('increments localStorage.actionCount by 1', () => {
-        const push = () => Promise.resolve();
-        return createActionSync(push)()(() => {})(action).then(() => {
-          expect(localStorage.actionCount).toEqual(13);
+        const dispatch = createActionSync(push)()(() => {});
+        return dispatch(action).then(() => {
+          expect(push.calls[0].arguments[0]).toEqual(0);
+          return dispatch(action);
+        }).then(() => {
+          expect(push.calls[1].arguments[0]).toEqual(1);
+          return dispatch(action);
+        }).then(() => {
+          expect(push.calls[2].arguments[0]).toEqual(2);
         });
       });
-    });
 
-    it('dispatches the action', () => {
-      const middleware = createActionSync(() => Promise.resolve());
-      const dispatch = expect.createSpy();
-      return middleware()(dispatch)(action).then(() => {
-        expect(dispatch).toHaveBeenCalledWith(action);
-      });
     });
 
     context('on conflict', () => {
@@ -78,7 +56,6 @@ describe('redux-action-sync', () => {
           expect(dispatch.calls[1].arguments[0]).toEqual(conflicts1[1]);
           expect(dispatch.calls[2].arguments[0]).toEqual(conflicts2[0]);
           expect(dispatch.calls[3].arguments[0]).toEqual(action);
-          expect(localStorage.actionCount).toEqual(4);
         });
       });
     });
