@@ -194,6 +194,7 @@ multiple Redux apps with no changes.
 * [ ] manual state rehydration
 * [ ] optimistic updates
 * [ ] server-side component
+* [ ] offline support (queueing & batching actions to sync)
 
 ### License
 
