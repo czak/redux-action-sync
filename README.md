@@ -9,7 +9,7 @@ See it in action: [todomvc-action-sync][]
 Please treat what you see as an experiment, an idea being explored with code.
 
 [redux]: http://redux.js.org/
-[todomvc-action-sync]: http://
+[todomvc-action-sync]: https://todomvc-action-sync.herokuapp.com/
 
 ## Premise
 
