@@ -1,9 +1,20 @@
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
+import axios from 'axios';
 import rootReducer from './reducers';
+import createActionSync from '../../src';
+
+const push = (index, action) =>
+  axios.post('/actions', { index, action })
+       .catch(error => {
+         throw Object.assign(error, { conflicts: error.response.data });
+       })
 
 const store = createStore(
   rootReducer,
-  window.__PRELOADED_STATE__
+  window.__PRELOADED_STATE__,
+  applyMiddleware(
+    createActionSync(push, window.__ACTION_COUNT__)
+  )
 );
 
 // re-render on dispatch
