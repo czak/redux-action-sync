@@ -19,6 +19,7 @@
     "webpack": "^1.13.2"
   },
   "dependencies": {
+    "express": "^4.14.0",
     "redux": "^3.5.2"
   }
 }
