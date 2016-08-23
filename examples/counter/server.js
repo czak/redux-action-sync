@@ -27,6 +27,6 @@ app.get('/', (req, res) => {
   );
 });
 
-app.use(express.static('public'));
+app.use(express.static('dist'));
 
 app.listen(3000, () => console.log('Listening on 3000'));
