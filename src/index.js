@@ -1,5 +1,5 @@
-const createActionSync = push => {
-  let actionCount = 0;
+const createActionSync = (push, initialActionCount = 0) => {
+  let actionCount = initialActionCount;
 
   return () => next => action => {
     const process = () =>
@@ -19,6 +19,6 @@ const createActionSync = push => {
 
     return process();
   };
-}
+};
 
 export default createActionSync;

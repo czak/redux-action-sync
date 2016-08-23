@@ -7,6 +7,24 @@ describe('redux-action-sync', () => {
   describe('middleware', () => {
     const action = { type: 'TEST_ACTION' };
 
+    context('when initial actionCount not specified', () => {
+      it('starts pushing at index == 0', () => {
+        const push = expect.createSpy().andReturn(Promise.resolve());
+        const middleware = createActionSync(push); // no actionCount value, default to 0
+        middleware()(() => {})(action);
+        expect(push).toHaveBeenCalledWith(0, action);
+      });
+    });
+
+    context('when initial actionCount is specified', () => {
+      it('starts pushing at index == initial actionCount', () => {
+        const push = expect.createSpy().andReturn(Promise.resolve());
+        const middleware = createActionSync(push, 7); // initial actionCount == 7
+        middleware()(() => {})(action);
+        expect(push).toHaveBeenCalledWith(7, action);
+      });
+    });
+
     context('on success', () => {
       it('dispatches the action', () => {
         const middleware = createActionSync(() => Promise.resolve());
@@ -29,7 +47,6 @@ describe('redux-action-sync', () => {
           expect(push.calls[2].arguments[0]).toEqual(2);
         });
       });
-
     });
 
     context('on conflict', () => {
