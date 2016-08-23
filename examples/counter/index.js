@@ -1,17 +1,16 @@
 import { createStore } from 'redux';
 import rootReducer from './reducers';
 
-const store = createStore(rootReducer);
+const store = createStore(
+  rootReducer,
+  window.__PRELOADED_STATE__
+);
 
-const render = () => {
+// re-render on dispatch
+store.subscribe(() => {
   document.getElementById('value').textContent =
     store.getState().toString();
-};
-
-// Initial render & re-render on dispatch
-render();
-store.subscribe(render);
-
+});
 
 // Bind click handlers to buttons
 document.getElementById('increment')
