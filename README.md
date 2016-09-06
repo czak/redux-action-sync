@@ -1,6 +1,6 @@
 # redux-action-sync
 
-![](https://codeship.com/projects/172335/status?branch=master)
+![](https://codeship.com/projects/971953f0-568a-0134-0115-02458a2e1ff4/status?branch=master)
 
 `redux-action-sync` is an action persistence middleware for [Redux][redux]
 applications. A simple solution for keeping state synchronised across multiple
